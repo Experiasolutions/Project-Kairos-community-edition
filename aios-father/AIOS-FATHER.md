@@ -7,7 +7,9 @@
 
 ## Antes de Começar
 
-Este guia assume que você já instalou o AIOS. Se não instalou, siga a documentação oficial primeiro.
+Este guia assume que você já instalou o AIOS. Se não instalou, siga a [documentação oficial do AIOS](https://github.com/SynkraAI/aios-core) primeiro.
+
+> **Nota sobre caminhos:** Todos os caminhos citados neste guia (como `.antigravity/agents/`, `squads/`, `clients/`) são **relativos à raiz do seu projeto AIOS**. Estes diretórios fazem parte da estrutura padrão do AIOS e se aplicam a qualquer instalação — ajuste os nomes conforme seu setup.
 
 **O que este guia NÃO é:**
 - Não é a documentação oficial do AIOS
@@ -235,10 +237,20 @@ schedule.scheduleJob('0 6 * * *', async () => {
   const url = `https://api.telegram.org/bot${token}/sendMessage`;
   const body = JSON.stringify({ chat_id: chatId, text: status });
 
-  const req = https.request(url, { method: 'POST', headers: { 'Content-Type': 'application/json' } });
+  const req = https.request(url, { method: 'POST', headers: { 'Content-Type': 'application/json' } }, (res) => {
+    if (res.statusCode === 200) {
+      console.log('[Scheduler] Morning brief enviado!');
+    } else {
+      console.error(`[Scheduler] Erro ao enviar: HTTP ${res.statusCode}`);
+    }
+  });
+
+  req.on('error', (err) => {
+    console.error('[Scheduler] Falha na requisição:', err.message);
+  });
+
   req.write(body);
   req.end();
-  console.log('[Scheduler] Morning brief enviado!');
 });
 ```
 
@@ -305,6 +317,7 @@ Sendo honesto (porque ninguém mais vai ser):
 2. Use a [First Week Checklist](../first-week-checklist/CHECKLIST.md) para guiar seus primeiros 7 dias
 3. Quando travar, leia os [Agent Templates](../agent-templates/) para ver exemplos funcionais
 4. Quando dominar os 3 primeiros níveis, explore o AIOS Father Nível 4-5
+5. Consulte a [documentação oficial do AIOS](https://github.com/SynkraAI/aios-core) para referência completa da API e recursos avançados
 
 ---
 
